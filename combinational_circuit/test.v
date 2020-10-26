@@ -1,5 +1,8 @@
 module test1 ();
-
+reg a;
+reg b;
+wire x;
+myand my(.a(a), .b(b), .x(x));
 initial begin
   a = 0;
   b = 0;
