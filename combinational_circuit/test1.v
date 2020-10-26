@@ -1,8 +1,10 @@
 module test1 ();
 reg a;
 reg b;
-wire x;
-myand my(.a(a), .b(b), .x(x));
+wire x_and;
+wire x_or;
+myand mya(.a(a), .b(b), .x(x_and));
+myor myo(.a(a), .b(b), .x(x_or));
 initial begin
   a = 0;
   b = 0;
