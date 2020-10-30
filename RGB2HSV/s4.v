@@ -1,6 +1,6 @@
 module s4(
-    input [13:0] GB,BR,RG,
-    output reg [13:0] P0,P1,P2
+    input signed [15:0] GB,BR,RG,
+    output reg signed [15:0] P0,P1,P2
 );
 
 always @(GB,BR,RG) begin

@@ -1,15 +1,16 @@
 module s6(
-   input [13:0] R,G,B,P0,Hg1,Hb1,S,V,
-   output reg [13:0] Hs0
-    
+   input signed [9:0] R,G,B,V,
+   input signed [15:0] P0,Hg1,Hb1,S,
+   output reg signed [15:0] Hs0
 );
 
 always @(R,G,B,P0,Hg1,Hb1,S,V) begin
-    if (V == R) 
+    if (V == R) begin
         Hs0 <= P0;
-    if (V == G)
+    end if (V == G) begin
         Hs0 <= Hg1;
-    if (V == B)
-        Hs0 <= Hb1;  
+    end if (V == B) begin
+        Hs0 <= Hb1;
+    end
 end
 endmodule

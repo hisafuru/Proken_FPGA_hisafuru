@@ -1,6 +1,6 @@
 module s5(
-    input [13:0] P1,P2,
-    output reg [13:0] Hg1, Hb1
+    input signed [15:0] P1,P2,
+    output reg signed [15:0] Hg1, Hb1
 );
 
 always @(P1,P2) begin

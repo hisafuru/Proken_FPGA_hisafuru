@@ -1,28 +1,31 @@
 module s1(
-    input [7:0] R_IN,G_IN,B_IN,
-    output reg [7:0] V, min 
+    input signed [9:0] R,G,B,
+    output reg signed [9:0] V, min 
 );
 
-always @(R_IN,G_IN,B_IN) begin
-    if (R_IN > G_IN) begin
-        if (R_IN > B_IN) begin
-            V <= R_IN;
-            if (G_IN > B_IN) begin
-                min <= B_IN;
+always @(R,G,B) begin
+    if (R > G) begin
+        if (R > B) begin
+            V <= R;
+            if (G > B) begin
+                min <= B;
             end else begin
-                min <= G_IN;
+                min <= G;
             end
         end else begin
-            V <= B_IN;
-            min <= G_IN;
+            V <= B;
+            min <= G;
         end
-    end else if (G_IN > B_IN) begin
-            V <= G_IN;
-            if (R_IN > B_IN) begin
-                min <= B_IN;
+    end else if (G > B) begin
+            V <= G;
+            if (R > B) begin
+                min <= B;
             end else begin
-                min <= R_IN;
+                min <= R;
             end
+     end else begin
+            V <= B;
+            min <= R;
      end
 end 
 endmodule 

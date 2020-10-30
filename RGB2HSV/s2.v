@@ -1,8 +1,7 @@
-module s1(
-    input [7:0] R,G,B,max,min,
-    output reg [7:0] S,GB,BR,RG
+module s2(
+    input signed [9:0] R,G,B,max,min,
+    output reg signed [9:0] S,GB,BR,RG
 );
-
 
 always @(R,G,B,max,min) begin
     GB <= G-B;
