@@ -19,6 +19,12 @@ initial begin
   b = 1;
   e = 1;
   #1;
+  c = 1;
+  b = 0;
+  #1
+  b = 1;
+  e = 0;
+  #1
   $finish();
 end
 endmodule

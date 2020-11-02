@@ -17,9 +17,9 @@ initial begin
     g = 8'd0;
     b = 8'd0;
     #1
-    r = 8'd255;
+    r = 8'd80;
     g = 8'd128;
-    b = 8'd1;
+    b = 8'd54;
     #1
     $finish();
 end
