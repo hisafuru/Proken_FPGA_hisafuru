@@ -1,0 +1,6 @@
+module hog(
+    input []
+
+);
+
+endmodule
