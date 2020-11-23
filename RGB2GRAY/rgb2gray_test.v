@@ -1,7 +1,7 @@
 module rgb2graytest();
 
 reg [7:0] r,g,b;
-wire [31:0] o;
+wire [7:0] o;
 
 rgb2gray r2g(.R(r), .G(g), .B(b), .O(o));
 
