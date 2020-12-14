@@ -29,33 +29,45 @@ int in_img_buf_g[3*640];
 int in_img_buf_b[3*640];
 int out_img_buf[3*(640-2)];
 
+int_s tmp_din, tmp_dout;
+	LOAD_IMG1: for(int x = 0; x < 640; x++){
+        tmp_din = stream_in.read();
+        in_img_buf_r[640*0+x] = (DTYPE)(tmp_din.data);
+        tmp_din = stream_in.read();
+        in_img_buf_g[640*0+x] = (DTYPE)(tmp_din.data);
+        tmp_din = stream_in.read();
+        in_img_buf_b[640*0+x] = (DTYPE)(tmp_din.data);
+     }
 
-    //現在位置？
-    int dst_y;
-    int dst_x;
-    dst_y = 0;
+	  LOAD_IMG2: for(int x = 0; x < 640; x++){
+	        tmp_din = stream_in.read();
+	        in_img_buf_r[640*1+x] = (DTYPE)(tmp_din.data);
+	        tmp_din = stream_in.read();
+	        in_img_buf_g[640*1+x] = (DTYPE)(tmp_din.data);
+	        tmp_din = stream_in.read();
+	        in_img_buf_b[640*1+x] = (DTYPE)(tmp_din.data);
+	 }
 
-    FILT_Y: for(int y = 0; y < 480-2; y++){
-      //画像のロード
-#ifdef HLS
-      int_s tmp_din, tmp_dout;
+
+
+    FILT_Y: for(int y = 2; y < 480-1; y++){
 
       //画像読み込み
       LOAD_IMG: for(int x = 0; x < 640; x++){
         tmp_din = stream_in.read();
-        in_img_buf_r[640*y+x] = (DTYPE)(tmp_din.data)
+        in_img_buf_r[640*y+x] = (DTYPE)(tmp_din.data);
         tmp_din = stream_in.read();
-        in_img_buf_g[640*y+x] = (DTYPE)(tmp_din.data)
+        in_img_buf_g[640*y+x] = (DTYPE)(tmp_din.data);
         tmp_din = stream_in.read();
-        in_img_buf_b[640*y+x] = (DTYPE)(tmp_din.data)
+        in_img_buf_b[640*y+x] = (DTYPE)(tmp_din.data);
       }
 
       //フィルタ
       int top,middle,bottom;
       FILT: for(int l=1;l < 640-1;l++){
-        top = in_img_buf_r[(y-1)%3*640+l-1]*1+in_img_buf_r[(y-1)%3*640+l]*2+in_img_buf_r[(y-1)%3*640+l+1]*1;
-        middle = in_img_buf_r[(y%3*640)+l-1]*2+in_img_buf_r[(y%3*640)+l]*4+in_img_buf_r[(y%3*640)+l+1]*2;
-        bottom = in_img_buf_r[(y+1)%3*640+l-1]*1+in_img_buf_r[(y+1)%3*640+l]*2+in_img_buf_r[(y+1)%3*640+l+1]*1;
+        top = in_img_buf_r[(y-2)%3*640+l-1]*1+in_img_buf_r[(y-2)%3*640+l]*2+in_img_buf_r[(y-2)%3*640+l+1]*1;
+        middle = in_img_buf_r[(y-1)%3*640+l-1]*2+in_img_buf_r[(y-1)%3*640+l]*4+in_img_buf_r[(y-1)%3*640+l+1]*2;
+        bottom = in_img_buf_r[y%3*640+l-1]*1+in_img_buf_r[y%3*640+l]*2+in_img_buf_r[y%3*640+l+1]*1;
         out_img_buf[l*3-3] = (top+middle+bottom)/16;
 
         top = in_img_buf_g[(y-1)%3*640+l-1]*1+in_img_buf_g[(y-1)%3*640+l]*2+in_img_buf_g[(y-1)%3*640+l+1]*1;
@@ -70,7 +82,7 @@ int out_img_buf[3*(640-2)];
       }
 
       //データ転送
-#pragma HLS pipeline
+//#pragma HLS pipeline
       WB: for(int m=0;m < 3*(640-2);m++){
         tmp_dout.data = (ap_uint<8>)out_img_buf[m];
         tmp_dout.last = 0;
