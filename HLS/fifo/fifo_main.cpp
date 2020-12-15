@@ -28,11 +28,12 @@ DTYPE *stream_in,DTYPE *stream_out
 
 int main(int argc, char *argv[]){
   int *in = (int *)malloc(640*480*3*sizeof(int));
-  int *out = (int *)malloc((640-2)*(480-2)*3*sizeof(int));
+  int *out = (int *)malloc(640*480*3*sizeof(int));
   for (int i=0;i < 640*480*3;i++){
-    in[i] = 222;
+    in[i] = i;
   }
 
   kernel(in,out);
-  printf("%d",out[0]);
+  printf("%d ",out[5]);
+
 }
