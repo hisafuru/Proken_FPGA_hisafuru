@@ -1,52 +1,23 @@
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include "ap_int.h"
+#include "hls_stream.h"
+#include "ap_axi_sdata.h"
 
-//#define HLS
-
-#ifdef HLS
-#include "ap_int.h"// 可変精度ライブラリ, 高位合成ツール専用
-#include "hls_half.h"// 半精度ライブラリ,
-#include "hls_stream.h"//ストリーミングデータ構造用ライブラリ
-#include "ap_axi_sdata.h"//axi_stream用ライブラリ
-
-typedef int DTYPE;
 struct int_s{
-    ap_uint<8> data; //8bit×RGB3色
-    bool last; // stop signal
+	int data;
+	bool last;
 };
-#else
-typedef int DTYPE;
-#endif
 
-void kernel(
-#ifdef HLS
-hls::stream<int_s>& stream_in,hls::stream<int_s>& stream_out
-#else
-DTYPE *stream_in,DTYPE *stream_out
-#endif
-);
+    void kernel(hls::stream<int_s>& in, hls::stream<int_s>& out){
+#pragma HLS INTERFACE axis port=in
+#pragma HLS INTERFACE axis port=out
 
-void kernel(
-#ifdef HLS
-hls::stream<int_s>& stream_in,hls::stream<int_s>& stream_out
-#else
-DTYPE *stream_in,DTYPE *stream_out
-#endif
-){
-//axi stream使用
-#pragma HLS INTERFACE axis port=stream_in
-#pragma HLS INTERFACE axis port=stream_out
-#pragma HLS INTERFACE s_axilite port=return
-
-#ifdef HLS
-    for(int i = 0;i < 640*480;i++){
-      stream_out.write(stream_in.read());
+    	int_s tmp;
+    	LOOP: do{
+#pragma HLS LOOP_TRIPCOUNT min=230400 max=230400
+    		tmp = in.read();
+    		out.write(tmp);
+    	}while(tmp.last == 0);
+    	tmp.data = 0;
+    	tmp.last = 1;
+    	out.write(tmp);
     }
-#else
-    for(int i = 0;i < 640*480;i++){
-      stream_out[i] = stream_in[i];
-    }
-#endif
-}
