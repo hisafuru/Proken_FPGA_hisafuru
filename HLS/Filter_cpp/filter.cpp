@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-//#define HLS
+#define HLS
 
 #ifdef HLS
 #include "ap_int.h"// 可変精度ライブラリ, 高位合成ツール専用
@@ -20,7 +20,7 @@ struct int_s{
 typedef int DTYPE;
 #endif
 
-void kernel(
+void gaussian(
 #ifdef HLS
 hls::stream<int_s>& stream_in,hls::stream<int_s>& stream_out
 #else
@@ -28,7 +28,7 @@ DTYPE *stream_in,DTYPE *stream_out
 #endif
 );
 
-void kernel(
+void gaussian(
 #ifdef HLS
 hls::stream<int_s>& stream_in,hls::stream<int_s>& stream_out
 #else
@@ -38,7 +38,7 @@ DTYPE *stream_in,DTYPE *stream_out
 //axi stream使用
 #pragma HLS INTERFACE axis port=stream_in
 #pragma HLS INTERFACE axis port=stream_out
-#pragma HLS INTERFACE s_axilite port=return
+//#pragma HLS INTERFACE s_axilite port=return
 //640ピクセル,3ライン
 #ifdef HLS
   int in_img_buf_r[3*640];
@@ -143,14 +143,14 @@ DTYPE *stream_in,DTYPE *stream_out
         tmp_dout.last = 0;
         stream_out.write(tmp_dout);
       }
-      tmp_dout.data = 0;
-      tmp_dout.last = 1;
-      stream_out.write(tmp_dout);
 #else
       for(int m=0;m < 3*(640-2);m++){
         stream_out[(y-2)*638*3+m] = out_img_buf[m];
       }
 #endif
     }
+    tmp_dout.data = 0;
+          tmp_dout.last = 1;
+          stream_out.write(tmp_dout);
 
 }
