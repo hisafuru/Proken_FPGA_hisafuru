@@ -9,7 +9,7 @@ struct int_s{
 };
 
 
-    void rgb2gray(hls::stream<int_s>& in, hls::stream<int_s>& out){
+    void rgb2hsv(hls::stream<int_s>& in, hls::stream<int_s>& out){
 #pragma HLS INTERFACE axis port=in
 #pragma HLS INTERFACE axis port=out
 
