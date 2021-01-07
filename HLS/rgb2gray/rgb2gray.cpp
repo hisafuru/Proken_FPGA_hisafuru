@@ -8,24 +8,43 @@ struct int_s{
 	bool last;
 };
 
-
-    void rgb2gray(hls::stream<int_s>& in, hls::stream<int_s>& out){
-#pragma HLS INTERFACE axis port=in
-#pragma HLS INTERFACE axis port=out
+    void rgb2gray(hls::stream<int_s>& stream_in, hls::stream<int_s>& stream_out){
+#pragma HLS INTERFACE axis port=stream_in
+#pragma HLS INTERFACE axis port=stream_out
 
     	int_s tmp_r,tmp_g,tmp_b,tmp;
-			DTYPE gray;
-    	LOOP: do{
+		DTYPE gray;
+		LOOP: for (int i = 0; i < 640*480-1; i++){
+			tmp_b = stream_in.read();
+			tmp_g = stream_in.read();
+			tmp_r = stream_in.read();
+			gray = (DTYPE)(tmp_r.data)*0.2989+(DTYPE)(tmp_g.data)*0.5870+(DTYPE)(tmp_b.data)*0.1140;
+			tmp.data = (ap_uint<8>)(gray);
+			tmp.last = 0;
+			stream_out.write(tmp);
+		}
+		tmp_b = stream_in.read();
+		tmp_g = stream_in.read();
+		tmp_r = stream_in.read();
+		gray = (DTYPE)(tmp_r.data)*0.2989+(DTYPE)(tmp_g.data)*0.5870+(DTYPE)(tmp_b.data)*0.1140;
+		tmp.data = (ap_uint<8>)(gray);
+		tmp.last = 1;
+		stream_out.write(tmp);
+		/*
+    	int_s tmp_r,tmp_g,tmp_b,tmp;
+    			DTYPE gray;
+    	LOOP: while(!stream_in.empty()){
 #pragma HLS LOOP_TRIPCOUNT min=307200 max=307200
-    		tmp_b = in.read();
-				tmp_g = in.read();
-				tmp_r = in.read();
-				gray = (DTYPE(tmp_r.data)*2989+DTYPE(tmp_g.data)*5870+DTYPE(tmp_b.data)*1140)/10000;
-				tmp.data = (ap_uint<8>)gray;
-				tmp.last = 0;
-    		out.write(tmp);
-    	}while(tmp.last == 0);
+    		tmp_b = stream_in.read();
+			tmp_g = stream_in.read();
+			tmp_r = stream_in.read();
+			gray = (DTYPE(tmp_r.data)*2989+DTYPE(tmp_g.data)*5870+DTYPE(tmp_b.data)*1140)/10000;
+			tmp.data = (ap_uint<8>)gray;
+			tmp.last = 0;
+			stream_out.write(tmp);
+    	}
     	tmp.data = 0;
     	tmp.last = 1;
-    	out.write(tmp);
+    	stream_out.write(tmp);
+*/
     }
