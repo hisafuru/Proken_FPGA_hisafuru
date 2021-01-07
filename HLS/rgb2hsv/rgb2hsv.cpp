@@ -15,8 +15,7 @@ struct int_s{
 
     	int_s tmp_r,tmp_g,tmp_b,tmp;
 			DTYPE V,S,H,min,R,G,B;
-    	LOOP: do{
-#pragma HLS LOOP_TRIPCOUNT min=307200 max=307200
+    	LOOP: for (int i = 0; i < 640*480-1; i++){
     		tmp_b = in.read(); B = DTYPE(tmp_b.data);
 				tmp_g = in.read(); G = DTYPE(tmp_g.data);
 				tmp_r = in.read(); R = DTYPE(tmp_r.data);
@@ -42,8 +41,30 @@ struct int_s{
         tmp.data = (ap_uint<8>)V;
 				tmp.last = 0;
     		out.write(tmp);
-    	}while(tmp.last == 0);
-    	tmp.data = 0;
-    	tmp.last = 1;
-    	out.write(tmp);
+    	}
+			tmp_b = in.read(); B = DTYPE(tmp_b.data);
+			tmp_g = in.read(); G = DTYPE(tmp_g.data);
+			tmp_r = in.read(); R = DTYPE(tmp_r.data);
+			V = std::max({B,G,R});
+			min = std::min({B,G,R});
+			S = (V-min)*255/V;
+			if(R == G &The & G == B){
+				H = 0;
+			}else if(V == R){
+				H = 60*((G-B)/(V-min));
+			}else if(V==G){
+				H = 60*((B-R)/(V-min))+120;
+			}else{
+				H = 60*((R-G)/(V-min))+240;
+			}
+			H = H/2;
+			tmp.data = (ap_uint<8>)H;
+			tmp.last = 0;
+			out.write(tmp);
+			tmp.data = (ap_uint<8>)S;
+			tmp.last = 0;
+			out.write(tmp);
+			tmp.data = (ap_uint<8>)V;
+			tmp.last = 1;
+			out.write(tmp);
     }
