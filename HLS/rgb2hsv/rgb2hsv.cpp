@@ -1,7 +1,7 @@
 #include "ap_int.h"
 #include "hls_stream.h"
 #include "ap_axi_sdata.h"
-
+#include <algorithm>
 typedef int DTYPE;
 struct int_s{
 	ap_uint<8> data;
@@ -23,7 +23,7 @@ struct int_s{
 				V = std::max({B,G,R});
         min = std::min({B,G,R});
         S = (V-min)*255/V;
-        if(R == G &The & G == B){
+        if(R == G && G == B){
           H = 0;
         }else if(V == R){
           H = 60*((G-B)/(V-min));
