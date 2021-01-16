@@ -24,8 +24,8 @@
 #define WINDOW_SIZE 3
 
 /*  set the height and weight  */
-#define WIDTH  1920
-#define HEIGHT 1080
+#define WIDTH  640
+#define HEIGHT 480
 
 #if NO
 #define NPxPC XF_NPPC1
@@ -40,8 +40,13 @@
 #else
 #define TYPE XF_8UC3
 #define CHANNELS 3
-#define STREAMW 32
+#define STREAMW 24
 #endif
+
+struct axis_t {
+    ap_uint<24> data;
+    ap_int<1> last;
+};
 
 typedef hls::stream<ap_axiu<STREAMW,1,1,1> > AXI_STREAM;
 

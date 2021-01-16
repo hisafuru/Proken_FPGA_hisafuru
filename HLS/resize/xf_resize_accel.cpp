@@ -28,7 +28,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
 #include "xf_axis_config.h"
-#include "xf_resize_config.h"
 
 void axis2xfMat (axis_t *src, 
 		 xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC_T> &_src, 

@@ -25,7 +25,7 @@ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR B
 HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+#include "xf_resize_config.h"
 ***************************************************************************/
 #ifndef _XF_AXIS_CONFIG_
 #define _XF_AXIS_CONFIG_
@@ -34,9 +34,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h> 
 #include "hls_stream.h"
 #include "ap_int.h"
-#include "common/xf_common.hpp"
+#include "common/xf_common.h"
 #include "imgproc/xf_resize.hpp"
-#include "xf_config_params.h"
 
 struct axis_t {
     ap_uint<24> data;

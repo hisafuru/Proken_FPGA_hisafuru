@@ -1,27 +1,27 @@
-#include "hls_video.h"
 #include "xf_gaussian_filter_config.h"
+#include "common/xf_infra.h"
 
-#define WIDTH 640
-#define HEIGHT 480
+void gaussian_filter_accel(xf::Mat<TYPE,HEIGHT,WIDTH,NPC1> &imgInput,xf::Mat<TYPE,HEIGHT,WIDTH,NPC1> &imgOutput,float sigma);
 
 typedef hls::stream<ap_axiu<32,1,1,1> > AXI_STREAM;
-typedef hls::Scalar<3, unsigned char> RGB_PIXEL;
-typedef hls::Mat<MAX_HEIGHT, MAX_WIDTH, HLS_8UC3> RGB_IMAGE;
+typedef xf::Mat<TYPE, HEIGHT, WIDTH, NPC1> RGB_IMAGE;
 
+extern "C" {
 void image_filter(AXI_STREAM& INPUT_STREAM, AXI_STREAM& OUTPUT_STREAM){
-#pragma HLS INTERFACE axis port=INPUT_STREAM
-#pragma HLS INTERFACE axis port=OUTPUT_STREAM
+#pragma HLS INTERFACE axis register both port=INPUT_STREAM
+#pragma HLS INTERFACE axis register both port=OUTPUT_STREAM
 
-  //Create AXI streaming interfaces for the core
+  float sigma = 1.3;
   RGB_IMAGE img_in(HEIGHT, WIDTH);
   RGB_IMAGE img_out(HEIGHT, WIDTH);
 
-  // Convert AXI4 Stream data to hls::mat format
-  hls::AXIvideo2Mat(INPUT_STREAM, img_0);
+#pragma HLS stream variable=img_in.data dim=1 depth=16
+#pragma HLS stream variable=img_out.data dim=1 depth=16
+#pragma HLS dataflow
+  xf::AXIvideo2xfMat(INPUT_STREAM, img_in);
 
-  xf::GaussianBlur<FILTER_WIDTH, XF_BORDER_CONSTANT, XF_8UC1, HEIGHT, WIDTH, XF_NPPC1>
-  (img_in, img_out, sigma);
+  gaussian_filter_accel(img_in,img_out,sigma);
 
-  // Convert the hls::mat format to AXI4 Stream format
-  hls::Mat2AXIvideo(img_out, OUTPUT_STREAM);
+  xf::xfMat2AXIvideo(img_out, OUTPUT_STREAM);
+}
 }
