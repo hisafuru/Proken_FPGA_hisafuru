@@ -8,9 +8,10 @@ struct int_s{
 	bool last;
 };
 
-    void color_detect(hls::stream<int_s>& stream_in, hls::stream<int_s>& stream_out){
+    void traffic_light_detect(hls::stream<int_s>& stream_in, hls::stream<int_s>& stream_out, bool& detect){
 #pragma HLS INTERFACE axis port=stream_in
 #pragma HLS INTERFACE axis port=stream_out
+#pragma HLS INTERFACE s_axilite port=detect
     int_s tmp_h,tmp_s,tmp_v,tmp;
 		DTYPE h,s,v;
 		DTYPE low[3] = {155,50,230}; //DTYPE low[3] = {0,0,240};
@@ -23,6 +24,7 @@ struct int_s{
 				low[1]<=s && s<=high[1] &&
 				low[2]<=v && v<=high[2]){
 				tmp.data = (ap_uint<8>)255;
+				detect = true;
 			}else{
 					tmp.data = (ap_uint<8>)0;
 			}
